@@ -44,6 +44,12 @@ jobs:
           git checkout --orphan deploy
           git rm -rf .
 
+          # Remove untracked directories that git rm doesn't touch
+          # (node_modules is in .gitignore so was never staged, but is still on disk)
+          find . -mindepth 1 -maxdepth 1 \
+            ! -name '.git' \
+            -exec rm -rf {} +
+
           # Copy built files into the working tree
           cp -r /tmp/out-deploy/. .
 

@@ -6,7 +6,7 @@ import BlogCard from '@/components/BlogCard'
 import SearchTriggerClient from '@/components/SearchTriggerClient'
 import { getAllDocs } from '@/lib/docs'
 import { getAllBlogs } from '@/lib/blog'
-import { docNavigation } from '@/lib/navigation'
+import { docNavigation, proxyBridgeNavigation } from '@/lib/navigation'
 
 function ArrowIcon() {
   return (
@@ -136,69 +136,21 @@ export default function HomePage() {
             <div className="flex items-end justify-between mb-10">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-accent-light mb-2">ProxyBridge</p>
-                <h2 className="text-3xl font-bold text-content tracking-tight">ProxyBridge - Open Source Proxy Client</h2>
+                <h2 className="text-3xl font-bold text-content tracking-tight">ProxyBridge Documentation</h2>
               </div>
-              <a
-                href="https://github.com/InterceptSuite/ProxyBridge"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/docs/proxybridge"
                 className="hidden sm:flex items-center gap-1.5 text-sm text-content-muted hover:text-content transition-colors group"
               >
-                View on GitHub
+                View all docs
                 <span className="group-hover:translate-x-0.5 transition-transform"><ArrowIcon /></span>
-              </a>
+              </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              <a
-                href="https://github.com/InterceptSuite/ProxyBridge"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group col-span-1 md:col-span-1 flex flex-col gap-3 p-7 rounded-2xl border border-[#1A1A1A] bg-card hover:bg-card-hover hover:border-[#2A2A2A] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-              >
-                <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-accent-light">
-                    <polyline points="16 18 22 12 16 6" />
-                    <polyline points="8 6 2 12 8 18" />
-                  </svg>
-                </div>
-                <h3 className="text-base font-semibold text-content group-hover:text-accent-light transition-colors">Open Source</h3>
-                <p className="text-sm text-content-muted leading-relaxed">Free and open source under MIT. Inspect the code, contribute, or self-host.</p>
-              </a>
-
-              <a
-                href="https://github.com/InterceptSuite/ProxyBridge"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex flex-col gap-3 p-7 rounded-2xl border border-[#1A1A1A] bg-card hover:bg-card-hover hover:border-[#2A2A2A] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-              >
-                <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-accent-light">
-                    <rect x="2" y="3" width="20" height="14" rx="2" />
-                    <line x1="8" y1="21" x2="16" y2="21" />
-                    <line x1="12" y1="17" x2="12" y2="21" />
-                  </svg>
-                </div>
-                <h3 className="text-base font-semibold text-content group-hover:text-accent-light transition-colors">Windows, macOS &amp; Linux</h3>
-                <p className="text-sm text-content-muted leading-relaxed">Route any application through InterceptSuite regardless of per-app proxy support.</p>
-              </a>
-
-              <a
-                href="https://github.com/InterceptSuite/ProxyBridge"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex flex-col gap-3 p-7 rounded-2xl border border-[#1A1A1A] bg-card hover:bg-card-hover hover:border-[#2A2A2A] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-              >
-                <div className="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-accent-light">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="2" y1="12" x2="22" y2="12" />
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                  </svg>
-                </div>
-                <h3 className="text-base font-semibold text-content group-hover:text-accent-light transition-colors">SOCKS5 &amp; HTTP Proxy</h3>
-                <p className="text-sm text-content-muted leading-relaxed">Forces any process to use a SOCKS5 or HTTP proxy - perfect for intercepting stubborn apps.</p>
-              </a>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {proxyBridgeNavigation.map((category) => (
+                <CategoryCard key={category.slug} category={category} basePath="proxybridge" />
+              ))}
             </div>
           </div>
         </section>

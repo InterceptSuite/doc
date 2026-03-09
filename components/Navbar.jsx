@@ -109,7 +109,7 @@ export default function Navbar({ searchData = [] }) {
 
   const navLinks = [
     { href: '/docs/interceptsuite', label: 'InterceptSuite' },
-    { href: 'https://github.com/InterceptSuite/ProxyBridge', label: 'ProxyBridge', external: true },
+    { href: '/docs/proxybridge', label: 'ProxyBridge' },
     { href: '/blog', label: 'Blog' },
   ]
 

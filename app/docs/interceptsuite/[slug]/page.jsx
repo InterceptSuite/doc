@@ -6,6 +6,7 @@ import DocSidebar from '@/components/DocSidebar'
 import { getDocBySlug, getAllDocSlugs, getAllDocs, extractHeadings, addHeadingIds } from '@/lib/docs'
 import { getAllBlogs } from '@/lib/blog'
 import { docNavigation } from '@/lib/navigation'
+import CopyCodeBlock from '@/components/CopyCodeBlock'
 
 export async function generateStaticParams() {
   return getAllDocSlugs('interceptsuite').map((slug) => ({ slug }))
@@ -109,6 +110,7 @@ export default function DocPage({ params }) {
                   className="prose"
                   dangerouslySetInnerHTML={{ __html: htmlWithIds }}
                 />
+                <CopyCodeBlock />
               </article>
 
               <div className="mt-12 pt-8 border-t border-[#1A1A1A] flex items-center justify-between gap-4">

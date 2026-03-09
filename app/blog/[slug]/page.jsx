@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import { getBlogBySlug, getAllBlogSlugs, getAllBlogs } from '@/lib/blog'
 import { getAllDocs } from '@/lib/docs'
 import { addHeadingIds, extractHeadings } from '@/lib/docs'
+import CopyCodeBlock from '@/components/CopyCodeBlock'
 
 export async function generateStaticParams() {
   return getAllBlogSlugs().map((slug) => ({ slug }))
@@ -124,6 +125,7 @@ export default function BlogPostPage({ params }) {
                   className="prose"
                   dangerouslySetInnerHTML={{ __html: htmlWithIds }}
                 />
+                <CopyCodeBlock />
               </article>
 
               <div className="mt-12 pt-8 border-t border-[#1A1A1A]">

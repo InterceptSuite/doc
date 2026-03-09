@@ -7,67 +7,79 @@ order: 2
 
 # Installing ProxyBridge
 
-ProxyBridge is distributed as a standalone binary - no installer required. Download the binary for your platform and you are ready to go.
+ProxyBridge releases are published on the [ProxyBridge GitHub releases page](https://github.com/InterceptSuite/ProxyBridge/releases). Each release ships three files:
 
-## Download
+| File | Platform |
+|------|----------|
+| `ProxyBridge-Setup-x.x.x.exe` | Windows |
+| `ProxyBridge-vx.x.x-Universal-Installer.pkg` | macOS |
+| `ProxyBridge-Linux-vx.x.x.tar.gz` | Linux |
 
-Get the latest release from the [ProxyBridge GitHub releases page](https://github.com/InterceptSuite/ProxyBridge/releases).
+Each release also includes a `sha256` checksum for every file. Verify the download before running it:
 
-| Platform | File |
-|----------|------|
-| Windows x64 | `proxybridge-windows-x64.exe` |
-| macOS x64 | `proxybridge-macos-x64` |
-| macOS ARM64 | `proxybridge-macos-arm64` |
-| Linux x64 | `proxybridge-linux-x64` |
+```bash
+# macOS / Linux
+shasum -a 256 <downloaded-file>
+
+# Windows (PowerShell)
+Get-FileHash <downloaded-file> -Algorithm SHA256
+```
+
+Compare the output against the checksum listed on the releases page.
 
 ## Windows
 
-1. Download `proxybridge-windows-x64.exe`
-2. Place it in a folder on your `PATH` (e.g. `C:\Tools\`) or in the same directory as your project
-3. Open a terminal and verify:
+1. Download `ProxyBridge-Setup-x.x.x.exe` from the [releases page](https://github.com/InterceptSuite/ProxyBridge/releases)
+2. Run the installer — click through the setup wizard and click **Install**
 
-```bash
-proxybridge --version
+**GUI**
+
+Search for **ProxyBridge** in the Start menu and click to launch it. Windows will show a UAC prompt asking for administrator permission — click **Yes**. The ProxyBridge GUI will open.
+
+**CLI**
+
+Open **Command Prompt as Administrator** (right-click → *Run as administrator*), then run:
+
 ```
+ProxyBridge_CLI -h
+```
+
+> ProxyBridge requires administrator privileges on Windows to intercept network traffic at the system level.
 
 ## macOS
 
-1. Download the binary for your architecture
-2. Make it executable and move it to `/usr/local/bin`:
+1. Download `ProxyBridge-vx.x.x-Universal-Installer.pkg` from the [releases page](https://github.com/InterceptSuite/ProxyBridge/releases)
+2. Double-click the `.pkg` file to launch the macOS installer
+3. Click through the installer steps and click **Install** — enter your password when prompted
+4. After installation, open **ProxyBridgeGUI** from Launchpad or Applications
 
-```bash
-chmod +x proxybridge-macos-arm64
-sudo mv proxybridge-macos-arm64 /usr/local/bin/proxybridge
-```
-
-3. If macOS blocks the binary (Gatekeeper), run:
-
-```bash
-xattr -dr com.apple.quarantine /usr/local/bin/proxybridge
-```
-
-4. Verify the installation:
-
-```bash
-proxybridge --version
-```
+For full macOS setup instructions including enabling the required System Extension, see the [Installing ProxyBridge on macOS](/blog/install-proxybridge-macos) guide.
 
 ## Linux
 
-1. Download `proxybridge-linux-x64`
-2. Make it executable and move it to `/usr/local/bin`:
+**Option 1 — One-line deploy script**
 
 ```bash
-chmod +x proxybridge-linux-x64
-sudo mv proxybridge-linux-x64 /usr/local/bin/proxybridge
+curl -Lo deploy.sh https://raw.githubusercontent.com/InterceptSuite/ProxyBridge/refs/heads/master/Linux/deploy.sh && sudo bash deploy.sh
 ```
 
-3. Verify the installation:
+**Option 2 — Manual install from tar.gz**
+
+1. Download `ProxyBridge-Linux-vx.x.x.tar.gz` from the [releases page](https://github.com/InterceptSuite/ProxyBridge/releases)
+2. Extract the archive and run the setup script:
 
 ```bash
-proxybridge --version
+tar -xzf ProxyBridge-Linux-vx.x.x.tar.gz
+cd ProxyBridge-Linux-vx.x.x
+sudo ./setup.sh
 ```
 
-## Requirements
+Both options install the GUI and CLI. After installation:
 
-ProxyBridge itself has no external dependencies. However, to intercept traffic you must have **InterceptSuite** running with its SOCKS5 proxy active. See [Proxy Settings](/docs/interceptsuite/proxy-settings) in the InterceptSuite docs for how to configure the proxy port.
+```bash
+sudo ProxyBridgeGUI     # graphical interface
+sudo ProxyBridge --help # CLI
+```
+
+For full Linux setup instructions see the [Installing ProxyBridge on Linux](/blog/install-proxybridge-linux) guide.
+

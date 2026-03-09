@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import DocSidebar from '@/components/DocSidebar'
 import { getDocBySlug, getAllDocSlugs, getAllDocs, extractHeadings, addHeadingIds } from '@/lib/docs'
+import CopyCodeBlock from '@/components/CopyCodeBlock'
 import { getAllBlogs } from '@/lib/blog'
 import { proxyBridgeNavigation } from '@/lib/navigation'
 
@@ -112,6 +113,7 @@ export default function ProxyBridgeDocPage({ params }) {
                   className="prose"
                   dangerouslySetInnerHTML={{ __html: htmlWithIds }}
                 />
+                <CopyCodeBlock />
               </article>
 
               <div className="mt-12 pt-8 border-t border-[#1A1A1A] flex items-center justify-between gap-4">

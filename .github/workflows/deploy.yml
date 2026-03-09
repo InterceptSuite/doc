@@ -1,0 +1,56 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy out/ to deploy branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Capture the current commit SHA for the commit message
+          COMMIT_SHA=$(git rev-parse --short HEAD)
+
+          # Stash the built output so we can switch branches without losing it
+          cp -r out /tmp/out-deploy
+
+          # Force-create a completely fresh deploy branch with no history
+          git checkout --orphan deploy
+          git rm -rf .
+
+          # Copy built files into the working tree
+          cp -r /tmp/out-deploy/. .
+
+          # Add a .nojekyll file so GitHub Pages serves files starting with _
+          touch .nojekyll
+
+          git add -A
+          git commit -m "deploy: ${COMMIT_SHA}"
+
+          git push origin deploy --force

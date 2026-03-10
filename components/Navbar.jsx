@@ -71,8 +71,21 @@ export default function Navbar({ searchData = [] }) {
         .filter(
           (item) =>
             item.title.toLowerCase().includes(lower) ||
-            (item.description || '').toLowerCase().includes(lower)
+            (item.description || '').toLowerCase().includes(lower) ||
+            (item.plainText || '').toLowerCase().includes(lower)
         )
+        .map((item) => {
+          const inTitle = item.title.toLowerCase().includes(lower)
+          const inDesc = (item.description || '').toLowerCase().includes(lower)
+          if (inTitle || inDesc) return item
+          const text = item.plainText || ''
+          const idx = text.toLowerCase().indexOf(lower)
+          if (idx === -1) return item
+          const start = Math.max(0, idx - 60)
+          const end = Math.min(text.length, idx + lower.length + 60)
+          const snippet = (start > 0 ? '\u2026' : '') + text.slice(start, end) + (end < text.length ? '\u2026' : '')
+          return { ...item, _snippet: snippet }
+        })
         .slice(0, 8)
       setResults(hits)
     },
@@ -287,7 +300,7 @@ export default function Navbar({ searchData = [] }) {
                   {results.map((item) => (
                     <li key={`${item.type}-${item.slug}`} role="option">
                       <Link
-                        href={`/${item.type}/${item.slug}`}
+                        href={item.type === 'blog' ? `/blog/${item.slug}` : `/docs/${item.product}/${item.slug}`}
                         onClick={closeSearch}
                         className="flex items-start gap-3 px-4 py-3 hover:bg-white/[0.04] transition-colors group"
                       >
@@ -304,11 +317,15 @@ export default function Navbar({ searchData = [] }) {
                           <p className="text-sm font-medium text-content group-hover:text-accent-light transition-colors">
                             {item.title}
                           </p>
-                          {item.description && (
+                          {item._snippet ? (
+                            <p className="text-xs text-content-dim mt-0.5 line-clamp-2">
+                              {item._snippet}
+                            </p>
+                          ) : item.description ? (
                             <p className="text-xs text-content-dim mt-0.5 line-clamp-1">
                               {item.description}
                             </p>
-                          )}
+                          ) : null}
                         </div>
                       </Link>
                     </li>

@@ -26,7 +26,7 @@ Use cases include:
 
 | Requirement | Details |
 |---|---|
-| Python Version | 3.8 – 3.12 |
+| Python Version | 3.8 to 3.12 |
 | Implementation | CPython only |
 | Package Support | Any pip-installable package |
 | System Install | Python must be installed on the host system |

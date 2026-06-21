@@ -1,6 +1,6 @@
 ---
 title: "Installing ProxyBridge on Linux"
-description: "Two ways to install ProxyBridge on Linux — a one-line deploy script or a manual tar.gz install — so you can route any application through InterceptSuite."
+description: "Two ways to install ProxyBridge on Linux, a one-line deploy script or a manual tar.gz install: so you can route any application through InterceptSuite."
 date: "2026-03-09"
 author: "InterceptSuite Team"
 readTime: "4 min read"
@@ -9,7 +9,7 @@ tags: ["Linux", "ProxyBridge", "Installation"]
 
 ProxyBridge routes any application's traffic through InterceptSuite, even apps that ignore system proxy settings. On Linux, there are two ways to install it: a one-line deploy script that handles everything automatically, or a manual install from the downloaded package. Both methods install the GUI and CLI.
 
-## Method 1 — One-Line Deploy Script
+## Method 1: One-Line Deploy Script
 
 This is the quickest way to get ProxyBridge installed. The script downloads, extracts, and sets up ProxyBridge in a single step.
 
@@ -21,17 +21,17 @@ curl -Lo deploy.sh https://raw.githubusercontent.com/InterceptSuite/ProxyBridge/
 
 The script will install ProxyBridge and make both the GUI and CLI available system-wide. Once it completes, skip ahead to [Launching ProxyBridge](#launching-proxybridge).
 
-## Method 2 — Manual Install from tar.gz
+## Method 2: Manual Install from tar.gz
 
 If you prefer to download the package manually or cannot reach the deploy script URL:
 
-### Step 1 — Download the Package
+### Step 1: Download the Package
 
 1. Open your browser and go to [https://interceptsuite.com/download/proxybridge](https://interceptsuite.com/download/proxybridge)
-2. Click **Download for Linux** — this downloads a `.tar.gz` archive (e.g. `ProxyBridge-Linux-v1.0.0.tar.gz`)
+2. Click **Download for Linux**: this downloads a `.tar.gz` archive (e.g. `ProxyBridge-Linux-v1.0.0.tar.gz`)
 3. Save the file to a convenient location, such as your home directory
 
-### Step 2 — Extract the Archive
+### Step 2: Extract the Archive
 
 Open a terminal, navigate to the directory containing the downloaded file, and extract it:
 
@@ -42,7 +42,7 @@ cd ProxyBridge-Linux-vX.X.X
 
 Replace `vX.X.X` with the actual version number in the filename.
 
-### Step 3 — Run the Setup Script
+### Step 3: Run the Setup Script
 
 Run the bundled setup script with `sudo`:
 
@@ -62,7 +62,7 @@ After installation, you can launch either the GUI or CLI.
 sudo ProxyBridgeGUI
 ```
 
-The graphical interface opens, letting you configure proxy settings, add proxy rules, and monitor connections — same as the Windows and macOS versions.
+The graphical interface opens, letting you configure proxy settings, add proxy rules, and monitor connections, same as the Windows and macOS versions.
 
 **CLI**
 
@@ -77,7 +77,7 @@ This prints all available CLI flags and commands. Use the CLI when working on he
 ## Verify ProxyBridge is Working
 
 1. Launch **ProxyBridgeGUI** and click the **Connection** tab
-2. Generate some traffic — for example, run `curl https://example.com` in another terminal
+2. Generate some traffic: for example, run `curl https://example.com` in another terminal
 3. You should see connection entries appear in real time in the Connection tab
 
 Once you can see connections being logged, ProxyBridge is installed and ready to redirect traffic through InterceptSuite.

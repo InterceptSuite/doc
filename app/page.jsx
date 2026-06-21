@@ -112,7 +112,7 @@ export default function HomePage() {
                 <h2 className="text-3xl font-bold text-content tracking-tight">InterceptSuite Documentation</h2>
               </div>
               <Link
-                href="/docs"
+                href="/docs/interceptsuite"
                 className="hidden sm:flex items-center gap-1.5 text-sm text-content-muted hover:text-content transition-colors group"
               >
                 View all docs

@@ -5,9 +5,9 @@ category: Configuration
 order: 3
 ---
 
-# Configuration — Windows
+# Configuration: Windows
 
-Open **ProxyBridge** from the Start menu. Windows will show a UAC prompt — click **Yes** to grant the required administrator permissions. ProxyBridge requires administrator privileges to intercept network traffic at the kernel level.
+Open **ProxyBridge** from the Start menu. Windows will show a UAC prompt: click **Yes** to grant the required administrator permissions. ProxyBridge requires administrator privileges to intercept network traffic at the kernel level.
 
 ## Proxy Settings
 
@@ -15,18 +15,36 @@ Open **ProxyBridge** from the Start menu. Windows will show a UAC prompt — cli
 
 1. Click the **Proxy** tab in the main window
 2. Click **Proxy Settings** from the menu
-3. Select **Proxy Type** — `SOCKS5` or `HTTP`
-4. Enter **Proxy Host** — IP address of the proxy server (e.g. `127.0.0.1`, `192.168.1.100`)
+3. Select **Proxy Type**: `SOCKS5` or `HTTP`
+4. Enter **Proxy Host**: supports both IP addresses and domain names:
+   - IP Address: `127.0.0.1`, `192.168.1.100`
+   - Domain Name: `proxy.example.com`, `localhost`
 5. Enter **Proxy Port** (e.g. `4444` for InterceptSuite, `1080` for SOCKS5, `8080` for HTTP)
-6. (Optional) Enter **Proxy Username** and **Proxy Password** for authenticated proxies — HTTP Basic Auth and SOCKS5 authentication are both supported. Leave blank for local InterceptSuite use.
+6. (Optional) Enter **Proxy Username** and **Proxy Password** for authenticated proxies: HTTP Basic Auth and SOCKS5 authentication are both supported. Leave blank for local InterceptSuite use.
 7. Click **Save Changes**
 
 ### Test Proxy Connection
 
-1. Click **Test Proxy Connection**
+1. Click **Test Proxy Connection** button
 2. Enter **Destination IP/Host** (default: `google.com`)
 3. Enter **Destination Port** (default: `80`)
-4. Click **Start Test** — results appear in the output area
+4. Click **Start Test** to verify proxy connectivity: results appear in the output area
+
+### Multiple Proxy Configurations
+
+ProxyBridge supports multiple proxy server configurations simultaneously. Each proxy rule can be assigned to a specific proxy configuration, allowing you to route different applications through different proxies at the same time.
+
+- Add multiple proxy servers (SOCKS5 and HTTP, mixed) in **Proxy Settings**
+- Each proxy entry gets a unique ID
+- When creating a **Proxy Rule**, select which proxy configuration to route through via the **Proxy Config** selector
+- If a rule's assigned proxy config is not found, ProxyBridge falls back to the first available configuration
+
+**Example use cases:**
+- Route `chrome.exe` through a SOCKS5 proxy and `curl.exe` through an HTTP proxy simultaneously
+- Test against multiple proxy endpoints without restarting
+- Assign latency-sensitive apps to a local proxy and others to a remote one
+
+---
 
 ## Proxy Rules
 
@@ -45,10 +63,10 @@ Open **ProxyBridge** from the Start menu. Windows will show a UAC prompt — cli
 | All processes | `*` |
 | Single process | `chrome.exe` |
 | Multiple processes (semicolon-separated) | `firefox.exe; chrome.exe` |
-| Wildcard match | `steam*.exe` |
+| Wildcard match (prefix, suffix, or anywhere) | `steam*.exe`, `*.exe`, `*ch*`, `ch*` |
 | Browse button | select executable from disk |
 
-**Target Hosts** (optional — leave empty or use `*` for all)
+**Target Hosts** (optional, leave empty or use `*` for all)
 
 | Format | Example |
 |--------|---------|
@@ -56,68 +74,97 @@ Open **ProxyBridge** from the Start menu. Windows will show a UAC prompt — cli
 | Wildcard range | `192.168.*.*` |
 | Multiple IPs | `127.0.0.1; 192.168.1.1` |
 | IP range | `10.10.1.1-10.10.255.255` |
+| IPv6 exact | `::1`, `2001:db8::1` |
+| IPv6 CIDR | `2001:db8::/32`, `fe80::/10` |
+| IPv6 range | `2001:db8::1-2001:db8::ff` |
 
-**Target Ports** (optional — leave empty or use `*` for all)
+**Target Ports** (optional, leave empty or use `*` for all)
 
 | Format | Example |
 |--------|---------|
 | Specific ports | `80; 8080` |
 | Port range | `80-8000` |
 
-**Protocol** — `TCP`, `UDP`, or `Both (TCP + UDP)`
+**Protocol**: `TCP`, `UDP`, or `Both (TCP + UDP)`
 
 **Action**
 
 | Action | Behaviour |
 |--------|-----------|
-| `PROXY` | Route through the configured proxy |
-| `DIRECT` | Allow direct internet access |
-| `BLOCK` | Block all internet access |
+| `DIRECT` | Allow direct internet access (available by default) |
+| `BLOCK` | Block all internet access (available by default) |
+| `PROXY` (Configured Proxies) | Route through a specific proxy configuration. A separate proxy option appears in the dropdown list for each proxy server you have added. |
 
 4. Click **Save Rule**
 
-> Rules are evaluated top-down — the first matching rule wins. Place more specific rules above broader ones.
+> Rules are evaluated top-down: the first matching rule wins. Place more specific rules above broader ones.
 
-> Adding a `PROXY` rule while no proxy is configured will result in traffic being routed as a direct connection. Configure proxy settings before using PROXY rules.
+> **Important:** By default, the Action selection menu only shows **DIRECT** and **BLOCK**. To route traffic, you must configure at least one proxy server in **Proxy Settings** first. Once configured, your available proxy configurations will appear in the Action list. ProxyBridge on Windows supports multiple proxies, allowing you to assign a different proxy configuration to each rule.
 
-### Exporting and Importing Rules
+### Profile Management
 
-Rules can be exported to a JSON file and imported on another machine, making it easy to share or back up configurations. The format is compatible across Windows, macOS, and Linux.
+ProxyBridge supports full configuration profiles. Instead of managing rules in isolation, you can save, switch, and export your entire setup (including proxy configurations, routing rules, localhost routing choices, and logging settings) as a profile.
 
-**Export**
+Profiles allow you to maintain different configurations for different security testing, debugging, or networking scenarios and switch between them easily when required.
 
-1. In the **Proxy Rules** window, tick the checkboxes in the **Select** column for the rules you want to export (or click **Select All**)
-2. Click **Export** (only active when at least one rule is selected)
-3. Choose a save location — the file is saved as JSON
+Using the **Profile** menu in the GUI, you can perform the following actions:
 
-**Import**
+- **Create Profile**: Create a new blank or template profile.
+- **Select / Switch Profile**: Instantly load and activate a different profile from your list.
+- **Export Profile**: Save your current active profile to a `.pbprofile` JSON file on disk.
+- **Import Profile**: Load a previously saved `.pbprofile` file into your local ProxyBridge client.
 
-1. Click **Import**
-2. Select a previously exported JSON file
-3. Rules are added to your existing rule list
+The `.pbprofile` format is cross-platform: profiles exported from Windows can be imported on macOS or Linux and vice versa.
 
-**JSON format**
+**Profile JSON Format:**
 
 ```json
-[
-  {
-    "processNames": "chrome.exe",
-    "targetHosts": "*",
-    "targetPorts": "*",
-    "protocol": "TCP",
-    "action": "PROXY",
-    "enabled": true
-  },
-  {
-    "processNames": "firefox.exe",
-    "targetHosts": "192.168.*.*",
-    "targetPorts": "80;443",
-    "protocol": "BOTH",
-    "action": "DIRECT",
-    "enabled": true
-  }
-]
+{
+  "Version": "1.0",
+  "LocalhostViaProxy": false,
+  "IsTrafficLoggingEnabled": true,
+  "ProxyConfigs": [
+    {
+      "Id": 1,
+      "Type": "socks5",
+      "Host": "127.0.0.1",
+      "Port": "1080",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": 2,
+      "Type": "http",
+      "Host": "127.0.0.1",
+      "Port": "8080",
+      "Username": "",
+      "Password": ""
+    }
+  ],
+  "ProxyRules": [
+    {
+      "ProcessName": "chrome.exe",
+      "TargetHosts": "*",
+      "TargetPorts": "*",
+      "Protocol": "TCP",
+      "Action": "PROXY",
+      "IsEnabled": true,
+      "ProxyConfigId": 1
+    },
+    {
+      "ProcessName": "firefox.exe",
+      "TargetHosts": "192.168.*.*",
+      "TargetPorts": "80;443",
+      "Protocol": "BOTH",
+      "Action": "PROXY",
+      "IsEnabled": true,
+      "ProxyConfigId": 2
+    }
+  ]
+}
 ```
+
+---
 
 ## Activity Monitoring
 
@@ -128,180 +175,127 @@ Rules can be exported to a JSON file and imported on another machine, making it 
 - See whether each connection is routed as `PROXY`, `DIRECT`, or `BLOCK`
 - Use the search box to filter connections
 
+---
+
 ## CLI
 
-The CLI provides the same capabilities as the GUI and is useful for scripting and automation. Open **Command Prompt as Administrator**, then run:
+`ProxyBridge_CLI.exe` is a lightweight native command line interface that loads a `.pbprofile` exported from the GUI and runs ProxyBridge headlessly: no GUI required.
 
-```
-ProxyBridge_CLI -h
-```
+### Basic Usage
 
-### Common examples
+Open **Command Prompt as Administrator** (right-click and choose *Run as administrator*), then run:
 
 ```powershell
-# Route Chrome through InterceptSuite (SOCKS5)
-ProxyBridge_CLI --proxy socks5://127.0.0.1:4444 --rule "chrome.exe:*:*:TCP:PROXY"
+# Run a profile (requires Administrator)
+ProxyBridge_CLI.exe --profile C:\Users\user\myconfig.pbprofile
 
-# Use an HTTP proxy
-ProxyBridge_CLI --proxy http://192.168.1.100:8080
+# Run with connection logging
+ProxyBridge_CLI.exe --profile myconfig.pbprofile --verbose 2
 
-# Multiple processes in one rule
-ProxyBridge_CLI --proxy socks5://127.0.0.1:4444 --rule "chrome.exe;firefox.exe:*:*:TCP:PROXY"
+# Run with full log and connection output
+ProxyBridge_CLI.exe --profile myconfig.pbprofile --verbose 3
 
-# Multiple rules with verbose logging
-ProxyBridge_CLI --proxy socks5://127.0.0.1:4444 --rule "chrome.exe:*:*:TCP:PROXY" --rule "firefox.exe:*:*:TCP:PROXY" --verbose 2
+# Check for updates (does not require Administrator)
+ProxyBridge_CLI.exe --update
 
-# Block a specific process
-ProxyBridge_CLI --rule "malware.exe:*:*:BOTH:BLOCK"
+# Show version
+ProxyBridge_CLI.exe --version
 
-# Route all traffic through proxy, but let InterceptSuite itself go direct
-ProxyBridge_CLI --proxy socks5://127.0.0.1:4444 --rule "InterceptSuite.exe:*:*:TCP:DIRECT" --rule "*:*:*:TCP:PROXY"
-
-# Target specific IPs and ports
-ProxyBridge_CLI --proxy socks5://127.0.0.1:4444 --rule "chrome.exe:192.168.*;10.10.*.*:80;443;8080:TCP:PROXY"
-
-# Load rules from a JSON file
-ProxyBridge_CLI --proxy socks5://127.0.0.1:4444 --rule-file C:\rules.json
-
-# Combine file rules with an extra command-line rule
-ProxyBridge_CLI --rule-file C:\rules.json --rule "steam.exe:*:*:TCP:PROXY"
+# Show help
+ProxyBridge_CLI.exe --help
 ```
 
-### All options
+### Command Line Options
 
-```
+```text
 Options:
-  --proxy <proxy>          Proxy server URL with optional authentication
-                           Format: type://ip:port or type://ip:port:username:password
-                           Examples: socks5://127.0.0.1:1080
-                                     http://proxy.com:8080:myuser:mypass
-                           [default: socks5://127.0.0.1:4444]
+  --profile <path>     Path to .pbprofile file exported from the GUI
+                       Export from GUI: File > Export Profile
 
-  --rule <rule>            Traffic routing rule (repeatable)
-                           Format: process:hosts:ports:protocol:action
-                             process  - chrome.exe, chr*.exe, *.exe, or *
-                                        (use ; for multiple: chrome.exe;firefox.exe)
-                             hosts    - *, google.com, 192.168.*.*, or multiple (;)
-                             ports    - *, 443, 80;8080, 80-100
-                             protocol - TCP, UDP, or BOTH
-                             action   - PROXY, DIRECT, or BLOCK
+  --verbose <0-3>      Logging verbosity
+                         0 - Silent (default)
+                         1 - Log messages only
+                         2 - Connection events only
+                         3 - Both logs and connections
 
-  --rule-file <path>       Path to JSON rules file (same format as GUI export)
-                           Example: --rule-file C:\\rules.json
+  --version            Show version information
+  -?, -h, --help       Show help
 
-  --dns-via-proxy          Route DNS queries through proxy [default: true]
-
-  --localhost-via-proxy    Route localhost (127.x.x.x) through proxy
-                           [default: false — see notes below]
-
-  --verbose <level>        0 = no logs (default), 1 = log messages,
-                           2 = connection events, 3 = both
-
-  --version                Show version information
-
-  --update                 Check for updates and download latest version
-
-  -h, --help               Show help
+Commands:
+  --update             Check for updates and download latest installer from GitHub
+                       (does not require Administrator)
 ```
 
-### Rule format reference
+**Notes:**
+- `--profile` requires Administrator (WinDivert kernel driver).
+- `--update` and `--version` do not require Administrator.
+- Press `Ctrl+C` to stop ProxyBridge cleanly.
+- The CLI (`ProxyBridge_CLI.exe`) and `ProxyBridgeCore.dll` must be in the same directory.
 
-**Format:** `process:hosts:ports:protocol:action`
-
-| Field | Values |
-|-------|--------|
-| process | `chrome.exe`, `chrome.exe;firefox.exe`, `steam*.exe`, `*` |
-| hosts | `*`, `192.168.1.1`, `192.168.*.*`, `10.0.1.1-10.0.255.255`, `host1;host2` |
-| ports | `*`, `443`, `80;443;8080`, `80-8000` |
-| protocol | `TCP`, `UDP`, `BOTH` |
-| action | `PROXY`, `DIRECT`, `BLOCK` |
-
-Process names are case-insensitive. Press `Ctrl+C` to stop ProxyBridge.
+---
 
 ## Things to Note
 
-### DNS traffic
+### Localhost Traffic
 
-DNS traffic on TCP/UDP port 53 is handled separately from proxy rules — port 53 rules are ignored. DNS routing is controlled by the **DNS via Proxy** option in the Proxy menu (enabled by default). When enabled, all DNS queries go through the proxy. When disabled, DNS uses direct connection.
-
-CLI equivalent: `--dns-via-proxy`
-
-### Localhost traffic
-
-Localhost traffic (`127.0.0.0/8`) bypasses proxy rules and goes direct by default. This is the recommended setting because most proxy servers reject localhost connections to prevent SSRF attacks, and many applications run local services on `127.0.0.1` that must stay on your machine (DevTools debugging, local dev servers, IPC).
+Localhost traffic (`127.0.0.0/8` and IPv6 `::1`) bypasses proxy rules and goes direct by default. This is the recommended setting because most proxy servers reject localhost connections to prevent SSRF attacks, and many applications run local services on `127.0.0.1` that must stay on your machine (DevTools debugging, local dev servers, IPC).
 
 **Enable localhost proxying only when:**
 - The proxy is running on the same machine (e.g. `127.0.0.1:4444`)
 - You are security testing and need to intercept localhost traffic in InterceptSuite/Burp Suite
 
-GUI: **Proxy** menu → **Localhost via Proxy**  
-CLI: `--localhost-via-proxy`
+GUI: **Proxy** menu -> **Localhost via Proxy**  
+CLI: Controlled via the `LocalhostViaProxy` field in the `.pbprofile` file.
 
-### Addresses that always go direct
+### Addresses That Always Go Direct
 
 The following are automatically routed as direct regardless of rules (you can still BLOCK them with an explicit rule):
 
-| Type | Range |
-|------|-------|
-| Broadcast | `255.255.255.255` and `x.x.x.255` |
-| Multicast | `224.0.0.0 – 239.255.255.255` |
-| APIPA / link-local | `169.254.0.0/16` |
-| DHCP ports | UDP 67, 68 |
+**IPv4:**
+- **Broadcast** (`255.255.255.255` and `x.x.x.255`)
+- **Multicast** (`224.0.0.0 to 239.255.255.255`)
+- **APIPA / link-local** (`169.254.0.0/16`)
+- **DHCP ports** (UDP 67, 68)
 
-### UDP proxy requirements
+**IPv6:**
+- **Multicast** (`FF00::/8`): Replaces IPv4 broadcast entirely; includes DHCPv6 multicast (`FF02::1:2`), all-nodes (`FF02::1`), router solicitation, etc.
+- **Link-local** (`FE80::/10`): Cannot be routed off-link; equivalent to IPv4 APIPA
+- **Site-local (deprecated)** (`FEC0::/10`)
+- **Unspecified** (`::`): Equivalent to IPv4 `0.0.0.0`
+- **DHCPv6 ports** (UDP 546, 547)
+
+You can still create rules with DIRECT or BLOCK actions targeting these addresses/ports, but PROXY is always overridden to DIRECT for them.
+
+### UDP Proxy Requirements
 
 **HTTP proxy + UDP = direct connection**
 
-HTTP proxy servers do not support UDP. If your configured proxy type is HTTP and you add a rule with Action `PROXY` and Protocol `UDP` or `BOTH`, ProxyBridge will not forward those UDP packets through the proxy — they will go direct instead. `BLOCK` and `DIRECT` UDP rules work regardless of proxy type.
+HTTP proxy servers do not support UDP. If your configured proxy type is HTTP and you add a rule with Action `PROXY` and Protocol `UDP` or `BOTH`, ProxyBridge will not forward those UDP packets through the proxy: they will go direct instead. `BLOCK` and `DIRECT` UDP rules work regardless of proxy type.
 
 **SOCKS5 is required for UDP proxying, but is not sufficient on its own**
 
-Switching to a SOCKS5 proxy enables UDP forwarding in ProxyBridge, but whether UDP traffic actually reaches the destination depends entirely on whether the SOCKS5 proxy server supports the **UDP ASSOCIATE** command. Most SOCKS5 proxy servers on the market — including SSH dynamic port forwarding (`ssh -D`) — do not implement UDP ASSOCIATE. If ProxyBridge forwards a UDP packet to a SOCKS5 proxy that doesn't support it, the proxy will drop the packet. You may experience slow connectivity, packet loss, or broken applications that rely on UDP.
+Switching to a SOCKS5 proxy enables UDP forwarding in ProxyBridge, but whether UDP traffic actually reaches the destination depends entirely on whether the SOCKS5 proxy server supports the **UDP ASSOCIATE** command. Most SOCKS5 proxy servers on the market, including SSH dynamic port forwarding (`ssh -D`), do not implement UDP ASSOCIATE. If ProxyBridge forwards a UDP packet to a SOCKS5 proxy that doesn't support it, the proxy will drop the packet.
 
 Only add UDP `PROXY` rules if you have confirmed your SOCKS5 proxy server supports UDP ASSOCIATE.
 
 **QUIC and HTTP/3**
 
-Even with a SOCKS5 proxy that supports UDP ASSOCIATE, many modern applications and websites may still not work correctly over UDP proxy. Most major websites and CDNs (Cloudflare, Fastly, Google, etc.) now support **HTTP/3**, which runs over **QUIC** — a UDP-based protocol. Routing QUIC traffic through a SOCKS5 proxy requires the proxy server to understand and handle QUIC and HTTP/3 specifically, not just raw UDP. A proxy that supports UDP ASSOCIATE at the SOCKS5 level does not automatically gain HTTP/3 or QUIC support.
+Even with a SOCKS5 proxy that supports UDP ASSOCIATE, many modern applications and websites may still not work correctly over UDP proxy. Most major websites and CDNs now support **HTTP/3**, which runs over **QUIC**: a UDP-based protocol. Routing QUIC traffic through a SOCKS5 proxy requires the proxy server to understand and handle QUIC and HTTP/3 specifically, not just raw UDP. A proxy that supports UDP ASSOCIATE at the SOCKS5 level does not automatically gain HTTP/3 or QUIC support.
 
-In practice, unless your SOCKS5 proxy explicitly supports HTTP/3 and QUIC proxying, routing UDP to it may work for simple UDP applications but will likely fail or degrade for any traffic to modern CDN-backed websites.
+In practice, unless your SOCKS5 proxy explicitly supports HTTP/3 and QUIC proxying, routing UDP to it may work for simple UDP applications but will likely fail or degrade for traffic to modern CDN-backed websites.
 
 **Testing UDP and HTTP/3 support**
 
-If you want to test ProxyBridge's UDP proxying including HTTP/3 and QUIC, [Nexus Proxy](https://github.com/InterceptSuite/nexus-proxy) is a SOCKS5 proxy server built by InterceptSuite specifically for this purpose. It supports UDP ASSOCIATE along with HTTP/3 and QUIC handling. It is not a full production-ready proxy server, but it is useful for validating that UDP rules, HTTP/3, and QUIC traffic flow correctly through ProxyBridge before deploying a production setup.
+If you want to test ProxyBridge's UDP proxying including HTTP/3 and QUIC, [Nexus Proxy](https://github.com/InterceptSuite/nexus-proxy) is a SOCKS5 proxy server built by InterceptSuite specifically for this purpose. It supports UDP ASSOCIATE along with HTTP/3 and QUIC handling.
 
-### IPv6
+### IPv6 Support
 
-IPv6 is not currently supported. IPv4 only.
+ProxyBridge fully supports IPv6 traffic interception and routing for both TCP and UDP. IPv6 rules use the same format as IPv4 with additional notation:
+- Exact address: `::1`, `2001:db8::1`
+- CIDR: `2001:db8::/32`, `fe80::/10`
+- Range: `2001:db8::1-2001:db8::ff`
+- Wildcard `*` matches all IPv4 and IPv6 addresses.
 
-## How It Works
+### Multiple Proxy Configurations
 
-ProxyBridge uses [WinDivert](https://reqrypt.org/windivert.html) to intercept all TCP/UDP packets at the kernel level and applies your rules to each packet.
-
-**Traffic flow for a proxied connection:**
-
-1. An application (Chrome, a game, a desktop tool) generates a TCP/UDP packet
-2. The WinDivert kernel driver intercepts the outbound packet before it reaches the network
-3. ProxyBridge evaluates the packet against your rules:
-   - **BLOCK** → packet is dropped
-   - **DIRECT** or no match → packet is re-injected unchanged
-   - **PROXY** → packet destination is rewritten to an internal relay port (`34010` for TCP, `34011` for UDP)
-4. The relay server reads the original destination, wraps the connection in SOCKS5/HTTP proxy protocol, authenticates if required, and forwards to the proxy
-5. The proxy (InterceptSuite) forwards to the real destination
-6. Response traffic flows back through the relay, which restores the original source IP/port before re-injection into the network stack
-
-Applications are completely unaware of any of this — they see normal socket behaviour.
-
-## Resource Usage
-
-ProxyBridge runs internal TCP and UDP relay servers to redirect intercepted packets to the configured proxy server. Under normal low-traffic conditions, CPU and memory usage is minimal.
-
-### CPU usage
-
-Under high network load, the relay servers handle large volumes of packets, which increases CPU usage. A spike of **2–11% CPU** during heavy traffic is normal. As soon as network load drops, CPU usage should return to below 1% or lower. If CPU usage remains elevated when the machine is otherwise idle, check whether a rule is matching unexpectedly high volumes of traffic.
-
-### Memory usage
-
-The relay servers maintain per-connection state and a connection cache to keep routing fast under load. Memory usage can rise from a baseline of around 50–60 MB to 100–150 MB during heavy traffic. Once load decreases, memory should settle back to below 100 MB or lower. The cache is managed automatically — you do not need to restart ProxyBridge to reclaim memory.
-
-
+Up to 16 proxy server configurations can be active simultaneously. Rules can each be assigned to a specific proxy config. If the assigned config is not found, ProxyBridge falls back to the first available config. This allows routing different apps through different proxies without any application-side configuration.

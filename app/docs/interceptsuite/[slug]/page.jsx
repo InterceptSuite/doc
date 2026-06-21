@@ -62,7 +62,7 @@ export default function DocPage({ params }) {
       <Navbar searchData={searchData} />
 
       <div className="pt-20 pb-24">
-        <div className="mx-auto w-full max-w-[1200px] px-6">
+        <div className="mx-auto w-full max-w-[1400px] px-6">
           <div className="flex gap-6 items-start">
             <div className="hidden lg:block sticky top-24 self-start h-[calc(100vh-6rem)] overflow-y-auto flex-shrink-0">
               <DocSidebar />

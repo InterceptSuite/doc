@@ -1,6 +1,6 @@
 ---
 title: "Intercepting LDAP With InterceptSuite"
-description: "Learn how to intercept encrypted LDAP traffic, including STARTTLS upgrades on port 389, using InterceptSuite Pro and ProxyBridge."
+description: "Learn how to intercept encrypted LDAP traffic, including STARTTLS upgrades on port 389, using InterceptSuite and ProxyBridge."
 date: "2025-08-28"
 author: "Sourav Kalal"
 readTime: "6 min read"
@@ -42,7 +42,7 @@ LDAP uses port 636 for direct TLS and port 389 for plain text with optional STAR
 
 A Wireshark capture of this process shows:
 
-- **Packets 1–3:** TCP three-way handshake.
+- **Packets 1-3:** TCP three-way handshake.
 - **Packet 4:** First LDAP plain-text packet from the client.
 - **Packet 22:** STARTTLS `ExtendedRequest` from the client.
 - **Packet 24:** STARTTLS success response from the server confirming TLS is available.
@@ -52,7 +52,7 @@ Every protocol implements this differently. SMTP typically needs only two or thr
 
 ## Intercepting LDAP STARTTLS With InterceptSuite
 
-InterceptSuite is built specifically for intercepting non-HTTP network traffic. InterceptSuite Pro is currently the only fully functional proxy with **universal STARTTLS support** - it can detect and intercept the plain-text-to-TLS upgrade for any known protocol, and also for custom protocols that implement their own upgrade mechanism.
+InterceptSuite is built specifically for intercepting non-HTTP network traffic. It is a fully functional proxy with **universal STARTTLS support** - it can detect and intercept the plain-text-to-TLS upgrade for any known protocol, and also for custom protocols that implement their own upgrade mechanism.
 
 Key capabilities relevant to LDAP interception:
 
@@ -75,13 +75,13 @@ PORT    STATE  SERVICE  VERSION
 636/tcp open   ldapssl
 ```
 
-### Step 1 - Start InterceptSuite Pro
+### Step 1 - Start InterceptSuite
 
-STARTTLS interception requires **InterceptSuite Pro** — the Standard edition does not support universal TLS upgrades. Open InterceptSuite Pro and confirm the proxy listener is active. By default it runs a **SOCKS5 proxy on `127.0.0.1:4444`**, visible in the **Proxy** tab.
+STARTTLS interception requires **InterceptSuite**. Open InterceptSuite and confirm the proxy listener is active. By default it runs a **SOCKS5 proxy on `127.0.0.1:4444`**, visible in the **Proxy** tab.
 
 ### Step 2 - Configure ProxyBridge
 
-Install and enable ProxyBridge first if you haven't already — see the [ProxyBridge installation guide](/blog/install-proxybridge-macos). Then point ProxyBridge at the InterceptSuite listener:
+Install and enable ProxyBridge first if you haven't already, see the [ProxyBridge installation guide](/blog/install-proxybridge-macos). Then point ProxyBridge at the InterceptSuite listener:
 
 1. Open **ProxyBridge** and click the **Proxy** tab in the main window.
 2. Click **Proxy Settings** from the menu.
@@ -93,11 +93,11 @@ Install and enable ProxyBridge first if you haven't already — see the [ProxyBr
 
 ### Step 3 - Add Proxy Rules in ProxyBridge
 
-You need two rules. The goal is to send all LDAP traffic from every application through the proxy, while making InterceptSuite's own outbound connections go direct — otherwise InterceptSuite would try to proxy through itself, creating an infinite loop.
+You need two rules. The goal is to send all LDAP traffic from every application through the proxy, while making InterceptSuite's own outbound connections go direct, otherwise InterceptSuite would try to proxy through itself, creating an infinite loop.
 
 Open **ProxyBridge**, click the **Proxy** tab, then click **Proxy Rules**.
 
-**Rule 1 — InterceptSuite goes direct**
+**Rule 1: InterceptSuite goes direct**
 
 This prevents InterceptSuite's own connections from being redirected back through itself.
 
@@ -111,7 +111,7 @@ This prevents InterceptSuite's own connections from being redirected back throug
 
 Click **Save Rule**.
 
-**Rule 2 — All LDAP traffic goes through the proxy**
+**Rule 2: All LDAP traffic goes through the proxy**
 
 This catches every other application's connections to LDAP ports and routes them to InterceptSuite.
 
@@ -128,13 +128,13 @@ Click **Save Rule**.
 
 > **Rule order matters.** ProxyBridge evaluates rules top-down and applies the first match. Make sure the InterceptSuite DIRECT rule is listed **above** the wildcard PROXY rule.
 
-### Step 4 - Verify InterceptSuite Pro is Listening
+### Step 4 - Verify InterceptSuite is Listening
 
-Switch back to **InterceptSuite Pro** and confirm the proxy listener shows **Listening** in the **Proxy** tab. Everything is now in place.
+Switch back to **InterceptSuite** and confirm the proxy listener shows **Listening** in the **Proxy** tab. Everything is now in place.
 
 ### Step 5 - Run the LDAP Client
 
-Run your LDAP client as normal — point it at the real LDAP server IP and port 389. ProxyBridge transparently intercepts the connection before it leaves your machine and routes it through InterceptSuite.
+Run your LDAP client as normal: point it at the real LDAP server IP and port 389. ProxyBridge transparently intercepts the connection before it leaves your machine and routes it through InterceptSuite.
 
 ### Step 6 - Inspect the Decrypted Traffic in Proxy History
 
@@ -151,20 +151,17 @@ From Proxy History you have several options:
 **Python Extension API** - write a dissector to parse the binary LDAP message structure and display fields like `bindDN`, `searchBase`, `filter`, and `attributes` in a readable format. See the [Extension API docs](/docs/interceptsuite/extension-api) for details.
 
 
-## InterceptSuite Editions
+## InterceptSuite Licensing
 
-InterceptSuite is available in two editions:
+InterceptSuite is a commercial product priced at $300 USD / year. It includes all capabilities:
 
-| Feature | Standard (Free) | Pro |
-|---|---|---|
-| TCP, TLS, plain-text UDP interception | Yes | Yes |
-| Universal TLS Upgrade / STARTTLS support | No | Yes |
-| DTLS interception | No | Yes |
-| Project File (save proxy data) | No | Yes |
-| PCAP file support | No | Yes |
+- **TCP, TLS, and plain-text UDP interception**
+- **Universal TLS Upgrade / STARTTLS support**
+- **DTLS interception**
+- **Project Files (save proxy data)**
+- **PCAP file export support**
 
-- **Standard Edition** - free and open source on [GitHub](https://github.com/InterceptSuite/InterceptSuite).
-- **Pro Edition** - required for STARTTLS interception. Available at [interceptsuite.com/download](https://interceptsuite.com/pricing).
+You can purchase a subscription and download InterceptSuite at [interceptsuite.com](https://interceptsuite.com/).
 
 ## Further Reading
 

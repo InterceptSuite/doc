@@ -19,26 +19,19 @@ The **Proxy History** feature provides a comprehensive log of all network packet
 
 The Proxy History table shows every packet that passed through the proxy:
 
-- **Chronological order** -Packets are listed in the order they were processed
-- **Complete metadata** -Each entry includes protocol, direction, size, and modification status
-- **Click to inspect** -Select any row to view the full packet content in the data viewer below
+- **Chronological order**: Packets are listed in the order they were processed
+- **Complete metadata**: Each entry includes protocol, direction, size, and modification status
+- **Click to inspect**: Select any row to view the full packet content in the data viewer below
 
 ### Context Menu Options
 
 Right-click any packet (or selection) to access management actions:
-
-#### Standard (All Editions)
 
 | Action | Description |
 |---|---|
 | Copy | Copy selected packets to clipboard |
 | Remove Selected | Delete selected packets from history |
 | Remove All | Delete all packets from history |
-
-#### Professional Edition Only
-
-| Action | Description |
-|---|---|
 | Export as PCAP | Export selected packets to a PCAP file |
 | Select Output Directory | Choose the destination folder for the PCAP file |
 
@@ -85,8 +78,6 @@ InterceptSuite does not perform application-layer protocol dissection (e.g., it 
 
 ## PCAP Export
 
-*(Professional Edition only)*
-
 ### Export Functionality
 
 Export your captured packets in the industry-standard PCAP format for analysis in tools like Wireshark:
@@ -131,4 +122,4 @@ Because InterceptSuite operates as a proxy, some low-level network metadata is n
 - **Review regularly** -Periodically scan proxy history for unexpected patterns
 - **Document modifications** -Track what changes were made and why
 - **Manage storage** -Large packet histories can consume significant memory; clear them when no longer needed
-- **Export before clearing** -Use PCAP export (Professional) to archive sessions before removing data
+- **Export before clearing** -Use PCAP export to archive sessions before removing data

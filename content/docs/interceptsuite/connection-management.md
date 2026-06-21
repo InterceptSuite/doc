@@ -77,11 +77,11 @@ Right-click the connection table to access:
 
 ### Data Retention Considerations
 
-The Connection tab stores port information that is required for accurate PCAP export (Professional Edition). Before clearing connection data, consider:
+The Connection tab stores port information that is required for accurate PCAP export. Before clearing connection data, consider:
 
-- **PCAP Export** -Removing connection entries causes InterceptSuite to use dummy port numbers when exporting those connections to PCAP
-- **Cross-feature tracking** -Cleared connections break the ability to correlate data across features
-- **Recommendation** -Keep connection data for as long as you may need to export PCAP files for those sessions
+- **PCAP Export**: Removing connection entries causes InterceptSuite to use dummy port numbers when exporting those connections to PCAP
+- **Cross-feature tracking**: Cleared connections break the ability to correlate data across features
+- **Recommendation**: Keep connection data for as long as you may need to export PCAP files for those sessions
 
 ## Use Cases
 

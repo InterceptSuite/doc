@@ -59,7 +59,7 @@ export default function BlogPostPage({ params }) {
       <Navbar searchData={searchData} />
 
       <div className="pt-20 pb-24">
-        <div className="mx-auto w-full max-w-[1200px] px-6">
+        <div className="mx-auto w-full max-w-[1400px] px-6">
 
           {/* Breadcrumb */}
           <div className="mb-5 flex items-center gap-2 text-sm text-content-dim">

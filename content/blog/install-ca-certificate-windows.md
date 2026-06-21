@@ -9,6 +9,8 @@ tags: ["Windows", "TLS", "Certificate", "HTTPS"]
 
 To intercept HTTPS traffic, your operating system must trust the InterceptSuite Certificate Authority (CA). This guide walks you through exporting the certificate from InterceptSuite and installing it as a trusted root CA on Windows.
 
+> For a video guide, watch: [InterceptSuite MITM Setup: Install CA Certificate on Windows](https://www.youtube.com/watch?v=wf8tCvlw_yg)
+
 ## Step 1 - Export the CA Certificate from InterceptSuite
 
 Before installing the certificate, you need to export it from the application.

@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
+import logoImg from '@/public/logo.png'
 
 function MenuIcon() {
   return (
@@ -141,13 +143,14 @@ export default function Navbar({ searchData = [] }) {
             className="flex items-center gap-2.5 group"
             aria-label="InterceptSuite Docs home"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent-dim flex items-center justify-center flex-shrink-0">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
-              </svg>
-            </div>
+            <Image
+              src={logoImg}
+              alt="InterceptSuite Logo"
+              width={24}
+              height={48}
+              className="flex-shrink-0"
+              priority
+            />
             <div className="flex flex-col leading-none">
               <span className="font-semibold text-content tracking-tight text-sm">InterceptSuite</span>
               <span className="text-[10px] text-content-dim tracking-wide">Docs</span>
@@ -206,7 +209,7 @@ export default function Navbar({ searchData = [] }) {
             </a>
 
             <Link
-              href="/docs/interceptsuite/installation"
+              href="/docs/interceptsuite/installation-windows"
               className="hidden md:flex items-center px-4 py-2 rounded-lg bg-accent hover:bg-accent-light text-white text-sm font-medium transition-colors"
             >
               Get Started
@@ -256,7 +259,7 @@ export default function Navbar({ searchData = [] }) {
               </a>
               <div className="pt-2">
                 <Link
-                  href="/docs/installation"
+                  href="/docs/interceptsuite/installation-windows"
                   className="flex items-center justify-center px-4 py-2.5 rounded-lg bg-accent hover:bg-accent-light text-white text-sm font-medium transition-colors"
                 >
                   Get Started

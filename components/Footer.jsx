@@ -1,20 +1,22 @@
 import Link from 'next/link'
 import { docNavigation } from '@/lib/navigation'
+import Image from 'next/image'
+import logoImg from '@/public/logo.png'
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[#1A1A1A] bg-surface mt-24">
+    <footer className="border-t border-[#1A1A1A] bg-surface mt-36 md:mt-48">
       <div className="container py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 md:gap-12">
           <div className="md:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent-dim flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                  <path d="M2 17l10 5 10-5" />
-                  <path d="M2 12l10 5 10-5" />
-                </svg>
-              </div>
+              <Image
+                src={logoImg}
+                alt="InterceptSuite Logo"
+                width={24}
+                height={48}
+                className="flex-shrink-0"
+              />
               <span className="font-semibold text-content tracking-tight">InterceptSuite</span>
             </Link>
             <p className="text-sm text-content-muted leading-relaxed">
